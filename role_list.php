@@ -1,13 +1,25 @@
 <?php
 
-    function role_list()
+    function role_list($rule)
     {
-        $tampil = 1; 
+        $rull = array();
+
+        if($rule == "staff")
+        {
+            $rull = ['Staff'];
+        }elseif($rule == 'manager')
+        {
+            $rull = ['Manager'];
+        }else{
+            $rull = ['Manager', 'Staff'];
+        }
+
+        $tampil = 5; 
         $hal    = ( isset($_GET['pag'])) ? ($tampil*($_GET['pag'] - 1)) : 0;
         $current= ( isset($_GET['pag'])) ? ($_GET['pag']) : 1;
         
         $arg    = array(
-            'role__in'  => array('Manager', 'Staff'),
+            'role__in'  => $rull,
             'number'    => $tampil,
             'offset'     => $hal
         );
@@ -54,7 +66,7 @@
                         'format' => '&pag=%#%', 
                         'prev_text' => __('&laquo; Previous'), 
                         'next_text' => __('Next &raquo;'), 
-                        'total' => $query->total_users, 
+                        'total' => $total, 
                         'current' => $current, 
                         'end_size' => 1,
                         'mid_size' => 5,
@@ -64,14 +76,20 @@
         <?php
     }
 
-    function role_shortcode()
+    function role_shortcode($atts, $content = null)
     {
+        extract( shortcode_atts(
+            array(
+              'rule' => '',
+            ), $atts )
+          );
         ob_start();
-        role_list();
+        role_list($rule);
 
         return ob_get_clean();
     }
 
+    // contoh shortcode [role_short rule="staff"]
     add_shortcode('role_short', 'role_shortcode');
 
 ?>
