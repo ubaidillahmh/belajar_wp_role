@@ -78,13 +78,19 @@
 
     function role_shortcode($atts, $content = null)
     {
-        extract( shortcode_atts(
-            array(
-              'rule' => '',
-            ), $atts )
-          );
+        // extract( shortcode_atts(
+        //     array(
+        //       'rule' => '',
+        //     ), $atts )
+        //   );
+        
+        $atts = array_change_key_case((array)$atts, CASE_LOWER);
+    
+        $param = shortcode_atts([
+                                    'rule' => '',
+                                ], $atts);
         ob_start();
-        role_list($rule);
+        role_list($param['rule']);
 
         return ob_get_clean();
     }
